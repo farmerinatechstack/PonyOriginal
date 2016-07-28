@@ -4,7 +4,9 @@ using System;
 namespace VRAssets {
 	// Encapsulates VR inputs.
 	public class VRInput : MonoBehaviour {
-		public event Action OnTap; // Called on release of Fire1
+		public event Action OnDown; 	// Called on press down of Fire1
+		public event Action OnUp; 		// Called on release of Fire1
+
 
 		// Use this for initialization
 		void Start () {
@@ -18,15 +20,21 @@ namespace VRAssets {
 
 		private void CheckInput() {
 
-			// Check for a tap of the fire button
+			// Check for a press down of the fire button
 			if (Input.GetButtonDown ("Fire1")) {
-				if (OnTap != null)
-					OnTap ();
+				if (OnDown != null)
+					OnDown ();
 			}
+
+			if (Input.GetButtonUp ("Fire1")) {
+				if (OnUp != null)
+					OnUp ();
+			} 
 		}
 
 		private void OnDestroy() {
-			OnTap = null;
+			OnDown = null;
+			OnUp = null;
 		}
 	}
 }

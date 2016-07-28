@@ -5,12 +5,14 @@ namespace VRAssets {
 	// Executes raycasts and exposes GameObjects with VRInteractiveItem
 	public class VREyeRaycaster : MonoBehaviour {
 		[SerializeField] private Transform vrCamera;
-		//[SerializeField] private Reticle reticle;                     // The reticle, if applicable
-		[SerializeField] private VRInput vrInput;                     // Used to call input based events on the current VRInteractiveItem
-		[SerializeField] private bool showDebugRay;                   // Optionally show the debug ray
-		[SerializeField] private float debugRayLength = 5f;           // Debug ray length
-		[SerializeField] private float debugRayDuration = 1f;         // How long the Debug ray will remain visible
-		[SerializeField] private float rayLength = 500f;              // How far into the scene the ray is cast
+		[SerializeField] private Reticle reticle;                 	// The reticle, if applicable
+		[SerializeField] private VRInput vrInput;                 	// Used to call input based events on the current VRInteractiveItem
+		[SerializeField] private bool showDebugRay;               	// Optionally show the debug ray
+		[SerializeField] private float debugRayLength = 5f;     	// Debug ray length
+		[SerializeField] private float debugRayDuration = 1f;       // How long the Debug ray will remain visible
+		[SerializeField] private float rayLength = 1000f;      		// How far into the scene the ray is cast
+		[SerializeField] private LayerMask m_ExclusionLayers;    	// Layers to exclude from the raycast
+
 
 		private VRInteractiveItem currentInteractible;
 		private VRInteractiveItem lastInteractible;
@@ -21,11 +23,11 @@ namespace VRAssets {
 		}
 
 		private void OnEnable() {
-			vrInput.OnTap += HandleTap;
+			vrInput.OnDown += HandleDown;
 		}
 
 		private void OnDisable() {
-			vrInput.OnTap -= HandleTap;
+			vrInput.OnDown -= HandleDown;
 		}
 
 		// Use this for initialization
@@ -46,7 +48,7 @@ namespace VRAssets {
 			// Execute raycast
 			Ray ray = new Ray(vrCamera.position, vrCamera.forward);
 			RaycastHit hit;
-			if (Physics.Raycast(ray, out hit, rayLength)) {
+			if (Physics.Raycast (ray, out hit, rayLength, ~m_ExclusionLayers)) {
 				currentInteractible = hit.collider.GetComponent<VRInteractiveItem> ();
 				if (currentInteractible == null)
 					return;
@@ -57,9 +59,15 @@ namespace VRAssets {
 				}
 
 				lastInteractible = currentInteractible;
-				//if (reticle) {
-					//reticle.SetPosition (hit);
-				//}
+				if (reticle) {
+					reticle.SetPosition (hit);
+				}
+			} else {
+				DeactivateLastInteractible ();
+				currentInteractible = null;
+
+				if (reticle) 
+					reticle.SetPosition ();
 			}
 		}
 
@@ -71,9 +79,9 @@ namespace VRAssets {
 			lastInteractible = null;
 		}
 
-		private void HandleTap() {
+		private void HandleDown() {
 			if (currentInteractible != null)  {
-				currentInteractible.Tap ();
+				currentInteractible.Down ();
 			}
 		}
 	}

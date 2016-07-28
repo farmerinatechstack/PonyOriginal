@@ -6,7 +6,7 @@ namespace VRAssets {
 	public class VRInteractiveItem : MonoBehaviour {
 		public event Action OnEnter;
 		public event Action OnExit;
-		public event Action OnTap;
+		public event Action OnDown;
 
 		protected bool entered;
 		public bool isEntered {
@@ -27,9 +27,9 @@ namespace VRAssets {
 				OnExit();
 		}
 
-		public void Tap() {
-			if (OnTap != null)
-				OnTap ();
+		public void Down() {
+			if (OnDown != null)
+				OnDown ();
 		}
 	}
 }

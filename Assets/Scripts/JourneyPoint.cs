@@ -20,23 +20,26 @@ public class JourneyPoint : MonoBehaviour {
 		rend = GetComponent<Renderer> ();
 		rend.material.color = parentJourney.offColor;
 
-		if (containsContent) {
+		if (reached & containsContent) {
 			lightComponent = gameObject.transform.GetChild (0).GetComponent<Light> ();
 			if (lightComponent == null) {
 				// TODO: throw exception
 			}
 			lightComponent.range = 10;
 			lightComponent.color = parentJourney.onColor;
-			lightComponent.intensity = 0.0f;
+			//lightComponent.intensity = 0f;
+		} else if (!reached) {
+			rend.material.color = Color.white;
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (reached) {
-			rend.material.color = Color.Lerp (parentJourney.offColor, parentJourney.onColor, parentJourney.lightBeat);
-			if (containsContent)
-				lightComponent.intensity = parentJourney.lightBeat;
+			rend.material.color = Color.Lerp (Color.white, parentJourney.onColor, parentJourney.lightBeat);
+			if (containsContent) {
+				//lightComponent.intensity = parentJourney.lightBeat;
+			}
 		}
 	}
 }

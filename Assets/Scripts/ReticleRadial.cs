@@ -121,7 +121,7 @@ namespace VRAssets
 			
 		private void HandleUp()
 		{
-			// If the radial is active stop filling it and reset it's amount.
+			// If the radial is active stop filling it and reset its amount.
 			if (isSelectionRadialActive)
 			{
 				if(selectionFillRoutine != null)

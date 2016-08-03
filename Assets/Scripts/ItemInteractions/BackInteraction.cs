@@ -1,34 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace VRAssets {
-	public class BackInteraction : MonoBehaviour {
-		[SerializeField] private VRInteractiveItem interactiveItem;
-		[SerializeField] private ReticleRadial radial;
+// Handles interaction with the back button on the menu.
+public class BackInteraction : MonoBehaviour {
+	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
+	[SerializeField] private VRAssets.ReticleRadial radial;
 
+	public Animator menuAnimator;
+	public bool inGaze;
+	public GameObject menu;
 
-		private void OnEnable() {
-			interactiveItem.OnEnter += HandleEnter;
-			interactiveItem.OnExit += HandleExit;
-			interactiveItem.OnDown += HandleDown;
+	private void OnEnable() {
+		interactiveItem.OnEnter += HandleEnter;
+		interactiveItem.OnExit += HandleExit;
+		interactiveItem.OnDown += HandleDown;
+		radial.OnSelectionComplete += HandleSelected;
+	}
+
+	private void OnDisable() {
+		interactiveItem.OnEnter -= HandleEnter;
+		interactiveItem.OnExit -= HandleExit;
+		interactiveItem.OnDown -= HandleDown;
+		radial.OnSelectionComplete -= HandleSelected;
+	}
+
+	private void HandleDown() {
+
+	}
+
+	private void HandleEnter() {
+		inGaze = true;
+		radial.Show ();
+	}
+
+	private void HandleExit() {
+		inGaze = false;
+		radial.Hide ();
+	}
+
+	private void HandleSelected() {
+		if (inGaze) {
+			print ("Selected back button");
+			menuAnimator.SetTrigger ("Shrink");
+			StartCoroutine (HideMenu ());
 		}
+	}
 
-		private void OnDisable() {
-			interactiveItem.OnEnter -= HandleEnter;
-			interactiveItem.OnExit -= HandleExit;
-			interactiveItem.OnDown -= HandleDown;
-		}
-
-		private void HandleDown() {
-
-		}
-
-		private void HandleEnter() {
-			radial.Show ();
-		}
-
-		private void HandleExit() {
-			radial.Hide ();
-		}
+	private IEnumerator HideMenu() {
+		yield return new WaitForSeconds (1.0f);
+		menu.SetActive (false);
 	}
 }

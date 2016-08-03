@@ -42,7 +42,7 @@ public class SacLAInteraction : MonoBehaviour {
 		if (inGaze) {
 			print ("SAC->LA journey selected.");
 			menu.SetActive (true);
-			menuAnimator.SetTrigger ("Grow");
+			menuAnimator.Play ("Grow");
 		}
 	}
 }

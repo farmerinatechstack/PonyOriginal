@@ -40,14 +40,16 @@ public class BackInteraction : MonoBehaviour {
 
 	private void HandleSelected() {
 		if (inGaze) {
-			print ("Selected back button");
-			menuAnimator.SetTrigger ("Shrink");
+			menuAnimator.Play("Shrink");
 			StartCoroutine (HideMenu ());
 		}
 	}
 
 	private IEnumerator HideMenu() {
 		yield return new WaitForSeconds (1.0f);
+		print ("Disappearing");
 		menu.SetActive (false);
+		menu.transform.localScale = Vector3.one;
+		HandleExit ();
 	}
 }

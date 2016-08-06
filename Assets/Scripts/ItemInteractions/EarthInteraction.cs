@@ -9,8 +9,8 @@ public class EarthInteraction : MonoBehaviour {
 	[SerializeField] private VRAssets.VRInteractiveItem interactiveItem;
 	[SerializeField] private VRAssets.ReticleRadial radial;
 
-	private float dummyCount = 0f;
-	private float xRotation = 0f;
+	private float xRotation = 27f;
+	private float yRotation = 0f;
 
 	private void OnEnable() {
 		interactiveItem.OnEnter += HandleEnter;
@@ -37,20 +37,21 @@ public class EarthInteraction : MonoBehaviour {
 	}
 
 	private void Update() {
-		if (Input.GetMouseButtonDown (0)) {
-			print ("Forward: " + Vector3.forward);
-			print ("Camera Forward: " + cameraTransform.forward);
-
-			print ("Difference: " + (cameraTransform.forward - Vector3.forward));
-		}
-
 		Vector3 rotateVector = GetRotationVector ();
 
-		//earthTransform.Rotate (rotateVector, Space.World);
-
 		xRotation += rotateVector.x;
-		print (xRotation);
-		//earthTransform.eulerAngles = new Vector3 (xRotation, 0, 0);
+		xRotation = Mathf.Clamp (xRotation, -50f, 50f);
+		yRotation += rotateVector.y;
+
+		//earthTransform.eulerAngles = new Vector3 (xRotation, yRotation, 0);
+
+		earthTransform.eulerAngles = new Vector3 (earthTransform.eulerAngles.x, yRotation, 0);
+		earthTransform.localEulerAngles = new Vector3 (xRotation, earthTransform.localEulerAngles.y, 0);
+
+		if (Input.GetMouseButtonDown (0)) {
+			print ("Global Euler: " + earthTransform.eulerAngles);
+			print ("Local Euler: " + earthTransform.localEulerAngles);
+		}
 	}
 
 	private Vector3 GetRotationVector() {
